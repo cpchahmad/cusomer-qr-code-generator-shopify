@@ -25,5 +25,10 @@ Route::group(['middleware' => ['verify.shopify']], function () {
     Route::get('customer_detail/{id}', [CustomerController::class, 'show'])->name('customer_detail');
     Route::get('activeStatus', [CustomerController::class, 'active']);
     Route::get('InactiveStatus', [CustomerController::class, 'Inactive']);
+    Route::get('get/{filename}', [CustomerController::class, 'getFile'])->name('getfile');
 });
 Route::get('changeStatus', [CustomerController::class, 'status']);
+
+Route::group(['prefix' => 'customer'], function () {
+    Route::get('/status/{id}', [CustomerController::class, 'checkStatus']);
+});

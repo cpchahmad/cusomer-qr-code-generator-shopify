@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Exception;
+
+use SimpleXMLElement;
 use App\Models\Customer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -38,10 +40,22 @@ class CustomerController extends Controller
         if ($customer === null) {
             $customer = new Customer();
         }
-        $qr_code_svg =  QrCode::size(200)->generate('Hello!');
-        if (isset($qr_code_svg) && $customer->qr_code_svg == null) {
-            $customer->qr_code_svg = $qr_code_svg;
+        $time = time();
+
+        // create a folder
+        if (!\File::exists(public_path('images'))) {
+            \File::makeDirectory(public_path('images'), $mode = 0777, true, true);
         }
+        $img_url = $time . '.svg';
+        // QrCode::generate($request->qr_message, 'images/' . );
+        QrCode::size(200)->generate('https://phpstack-820245-2817839.cloudwaysapps.com/customer/status/' . $customer_check->id, $img_url);
+        if (isset($img_url) && $customer->qr_code_svg == null) {
+            $customer->qr_code_svg = $img_url;
+        }
+
+
+        \Session::put('qrImage', $img_url);
+
         $customer->shopify_customer_id = $customer_check->id;
         $customer->user_id = $shop->id;
         $customer->first_name = $customer_check->first_name;
@@ -76,5 +90,25 @@ class CustomerController extends Controller
         $shop = Auth::user();
         $customer_data = Customer::where('user_id', Auth::user()->id)->where('status', '=', 1)->get();
         return view('index', compact('customer_data'));
+    }
+    public function getFile($filename)
+    {
+
+        $path = public_path($filename);
+        return response()->download($path);
+
+        // $svgTemplate = new SimpleXMLElement($filename);
+        // $svgTemplate->registerXPathNamespace('svg', 'code');
+        // $svgTemplate->rect->addAttribute('fill-opacity', 0);
+        // $filename = $svgTemplate->asXML();
+        // Storage::disk('public')->put($filename);
+
+        // return response()->download($filename);
+    }
+    public function checkStatus($id)
+    {
+        $data = Customer::where('shopify_customer_id', $id)->first();
+        $html = view('status_view', compact('data'))->render();
+        return response($html);
     }
 }
