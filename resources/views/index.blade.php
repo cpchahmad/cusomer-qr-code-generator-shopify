@@ -110,6 +110,7 @@
         $(document).on("change", ".status-switch", function() {
             var status = $(this).prop('checked') == true ? 1 : 0;
             var customer_id = $(this).attr('customerid');
+            console.log('ali')
             $.ajax({
                 type: "GET",
                 dataType: "json",

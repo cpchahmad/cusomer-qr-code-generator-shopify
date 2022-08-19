@@ -42,13 +42,12 @@ class CustomerController extends Controller
         // if (!File::exists(public_path('images'))) {
         //     File::makeDirectory(public_path('images'), $mode = 0777, true, true);
         // }
-        if ($customer->qr_code_svg == null) {
-            $img_url = $time . '.svg';
-            $url = 'https://phpstack-820245-2817839.cloudwaysapps.com/customer/status/' . $customer_check->id;
-            QrCode::size(200)->generate($url, $img_url);
-
-            $customer->qr_code_svg = $img_url;
-        }
+        // if ($customer->qr_code_svg == null) {
+        $img_url = $time . '.svg';
+        $url = 'https://' . \Illuminate\Support\Facades\Auth::user()->name . '/a/customer/status/' . $customer_check->id;
+        QrCode::size(200)->generate($url, $img_url);
+        $customer->qr_code_svg = $img_url;
+        // }
         $customer->shopify_customer_id = $customer_check->id;
         $customer->user_id = $shop->id;
         $customer->first_name = $customer_check->first_name;
@@ -63,7 +62,6 @@ class CustomerController extends Controller
         $customer = Customer::where('id', $id)->first();
         return view('show', compact('customer'));
     }
-
     public function status(Request $request)
     {
         $customer = Customer::find($request->customer_id);
@@ -98,7 +96,7 @@ class CustomerController extends Controller
     public function checkStatus($id)
     {
         $data = Customer::where('shopify_customer_id', $id)->first();
-        $html = view('status_view', compact('data'))->render();
-        return response($html);
+        $html = view('status.view')->with($data)->render();
+        return response($html)->withHeaders(['Content-Type' => 'application/liquid']);
     }
 }
