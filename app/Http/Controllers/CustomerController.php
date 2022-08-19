@@ -17,7 +17,6 @@ class CustomerController extends Controller
     {
         try {
             $shop = Auth::user();
-            // dd($shop);
             $response = $shop->api()->rest('GET', '/admin/customers.json');
             if ($response['errors'] == false) {
                 $customers = $response['body']['customers'];
@@ -27,7 +26,6 @@ class CustomerController extends Controller
                 return Redirect::tokenRedirect('home', ['notice' => 'customer Sync successfully!']);
             }
             return Redirect::tokenRedirect('home', ['error', 'customer sync failed!']);
-            // return redirect()->back()->with('error', 'Customer sync failed!');
         } catch (Exception $exception) {
             dd($exception->getMessage());
             return Redirect::tokenRedirect('home', ['error', 'customer sync failed!']);
@@ -35,27 +33,20 @@ class CustomerController extends Controller
     }
     public function customerCreateUpdate($customer_check, $shop)
     {
-
         $customer = Customer::where('user_id', $shop->id)->where('shopify_customer_id', $customer_check->id)->first();
         if ($customer === null) {
             $customer = new Customer();
         }
-        $time = time();
-
-        // create a folder
+        $time = rand();
         if (!\File::exists(public_path('images'))) {
             \File::makeDirectory(public_path('images'), $mode = 0777, true, true);
         }
-        $img_url = $time . '.svg';
-        // QrCode::generate($request->qr_message, 'images/' . );
-        QrCode::size(200)->generate('https://phpstack-820245-2817839.cloudwaysapps.com/customer/status/' . $customer_check->id, $img_url);
+        $img_url = 'images/' . $time . '.svg';
+        $url = 'https://textglobal-testing-abdullah-store.myshopify.com/admin/apps/qr-code-27/customer/status/' . $customer_check->id;
+        QrCode::size(200)->generate($url, $img_url);
         if (isset($img_url) && $customer->qr_code_svg == null) {
             $customer->qr_code_svg = $img_url;
         }
-
-
-        \Session::put('qrImage', $img_url);
-
         $customer->shopify_customer_id = $customer_check->id;
         $customer->user_id = $shop->id;
         $customer->first_name = $customer_check->first_name;
@@ -76,7 +67,6 @@ class CustomerController extends Controller
         $customer = Customer::find($request->customer_id);
         $customer->status = $request->status;
         $customer->save();
-
         return response()->json(['success' => 'Status change successfully.']);
     }
     public function active()
@@ -93,16 +83,13 @@ class CustomerController extends Controller
     }
     public function getFile($filename)
     {
-
         $path = public_path($filename);
         return response()->download($path);
-
         // $svgTemplate = new SimpleXMLElement($filename);
         // $svgTemplate->registerXPathNamespace('svg', 'code');
         // $svgTemplate->rect->addAttribute('fill-opacity', 0);
         // $filename = $svgTemplate->asXML();
         // Storage::disk('public')->put($filename);
-
         // return response()->download($filename);
     }
     public function checkStatus($id)

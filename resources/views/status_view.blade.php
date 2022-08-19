@@ -3,7 +3,6 @@
     <main class="container-fluid">
         <header class="page-header">
             <div class="page-header__content">
-
             </div>
         </header>
         <div class="d-flex" style="margin-top: 5rem">
