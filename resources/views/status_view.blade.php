@@ -1,4 +1,4 @@
-{{ $data->first_name . ' ' . $data->last_name }}
+<h3>Abdullah</h3>
 {{-- <main class="container-fluid">
     <header class="page-header">
         <div class="page-header__content">
