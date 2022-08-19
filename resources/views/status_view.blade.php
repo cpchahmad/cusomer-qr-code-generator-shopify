@@ -8,19 +8,19 @@
             <div class="card-body">
                 <ul class="">
                     <li style="list-style-type: none">
-                        <div class="row">
-                            <div class="col-4">
+                        <div class="" style="display: flex">
+                            <div class="">
                                 <h3>Name: </h3>
                             </div>
-                            <div class="col-6">
+                            <div class="" style="margin-left:10rem;">
                                 <h3>{{ $data->first_name . ' ' . $data->last_name }}</h3>
                             </div>
                         </div>
-                        <div class="row" style="margin-top:2rem">
-                            <div class="col-4">
+                        <div style="margin-top:2rem;display:flex">
+                            <div>
                                 <h3>Status:</h3>
                             </div>
-                            <div class="col-6">
+                            <div style="margin-left: 10rem">
                                 {{-- <span class="ml-2">
                                         <label class="switch " for="test_mode">
                                             <input class="status-switch d-none" id="test_mode"
@@ -32,7 +32,7 @@
                                 @if ($data->status == 0)
                                     <p><span class="badge badge--success">Active</span></p>
                                 @else
-                                    <p><span class="badge badge--attention">Inactive</span></p>
+                                    <p><span class="badge badge--attention" style="">Inactive</span></p>
                                 @endif
                             </div>
                         </div>
