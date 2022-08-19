@@ -42,12 +42,12 @@ class CustomerController extends Controller
         // if (!File::exists(public_path('images'))) {
         //     File::makeDirectory(public_path('images'), $mode = 0777, true, true);
         // }
-        // if ($customer->qr_code_svg == null) {
-        $img_url = $time . '.svg';
-        $url = 'https://' . \Illuminate\Support\Facades\Auth::user()->name . '/a/customer/status/' . $customer_check->id;
-        QrCode::size(200)->generate($url, $img_url);
-        $customer->qr_code_svg = $img_url;
-        // }
+        if ($customer->qr_code_svg == null) {
+            $img_url = $time . '.svg';
+            $url = 'https://' . \Illuminate\Support\Facades\Auth::user()->name . '/a/customer/status/' . $customer_check->id;
+            QrCode::size(200)->generate($url, $img_url);
+            $customer->qr_code_svg = $img_url;
+        }
         $customer->shopify_customer_id = $customer_check->id;
         $customer->user_id = $shop->id;
         $customer->first_name = $customer_check->first_name;
