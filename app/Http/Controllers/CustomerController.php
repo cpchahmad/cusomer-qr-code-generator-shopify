@@ -42,7 +42,7 @@ class CustomerController extends Controller
             \File::makeDirectory(public_path('images'), $mode = 0777, true, true);
         }
         $img_url = 'images/' . $time . '.svg';
-        $url = 'https://textglobal-testing-abdullah-store.myshopify.com/admin/apps/qr-code-27/customer/status/' . $customer_check->id;
+        $url = 'https://phpstack-820245-2817839.cloudwaysapps.com/customer/status/' . $customer_check->id;
         QrCode::size(200)->generate($url, $img_url);
         if (isset($img_url) && $customer->qr_code_svg == null) {
             $customer->qr_code_svg = $img_url;
