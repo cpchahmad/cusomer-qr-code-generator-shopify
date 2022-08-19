@@ -96,7 +96,8 @@ class CustomerController extends Controller
     public function checkStatus($id)
     {
         $data = Customer::where('shopify_customer_id', $id)->first();
-        $html = view('status_view')->with($data)->render();
+        // $html = view('status_view')->with($data)->render();
+        $html = view('status_view')->render();
         return response($html)->withHeaders(['Content-Type' => 'application/liquid']);
     }
 }
