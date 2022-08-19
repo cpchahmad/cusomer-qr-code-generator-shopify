@@ -1,6 +1,4 @@
-<h3>{{ $data->first_name . ' ' . $data->last_name }}</h3>
-
-{{-- <main class="container-fluid">
+<main class="container-fluid">
     <header class="page-header">
         <div class="page-header__content">
         </div>
@@ -31,7 +29,7 @@
                                             <span class="slider round"></span>
                                         </label>
                                     </span> --}}
-{{-- @if ($data->status == 0)
+                                @if ($data->status == 0)
                                     <p><span class="badge badge--success">Active</span></p>
                                 @else
                                     <p><span class="badge badge--attention">Inactive</span></p>
@@ -46,4 +44,4 @@
 
 
     </div>
-</main> --}}
+</main>
