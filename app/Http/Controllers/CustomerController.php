@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Exception;
+use File;
 
+use Exception;
 use SimpleXMLElement;
 use App\Models\Customer;
 use Illuminate\Http\Request;
@@ -38,13 +39,14 @@ class CustomerController extends Controller
             $customer = new Customer();
         }
         $time = rand();
-        if (!\File::exists(public_path('images'))) {
-            \File::makeDirectory(public_path('images'), $mode = 0777, true, true);
-        }
-        $img_url = 'images/' . $time . '.svg';
-        $url = 'https://phpstack-820245-2817839.cloudwaysapps.com/customer/status/' . $customer_check->id;
-        QrCode::size(200)->generate($url, $img_url);
-        if (isset($img_url) && $customer->qr_code_svg == null) {
+        // if (!File::exists(public_path('images'))) {
+        //     File::makeDirectory(public_path('images'), $mode = 0777, true, true);
+        // }
+        if ($customer->qr_code_svg == null) {
+            $img_url = $time . '.svg';
+            $url = 'https://phpstack-820245-2817839.cloudwaysapps.com/customer/status/' . $customer_check->id;
+            QrCode::size(200)->generate($url, $img_url);
+
             $customer->qr_code_svg = $img_url;
         }
         $customer->shopify_customer_id = $customer_check->id;
@@ -83,6 +85,7 @@ class CustomerController extends Controller
     }
     public function getFile($filename)
     {
+
         $path = public_path($filename);
         return response()->download($path);
         // $svgTemplate = new SimpleXMLElement($filename);
