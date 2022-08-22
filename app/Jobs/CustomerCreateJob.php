@@ -57,7 +57,7 @@ class CustomerCreateJob implements ShouldQueue
         $shop = User::where('name', $this->shopDomain->toNative())->first();
         $customer = json_decode(json_encode($this->data), false);
         $log = new Logs();
-        $log->json_encode($customer);
+        $log->logs = json_encode($customer);
         $log->save();
         $customerController = new CustomerController();
         $customerController->customerCreateUpdate($customer, $shop);
