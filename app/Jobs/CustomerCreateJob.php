@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Http\Controllers\CustomerController;
+use App\Models\Logs;
 use stdClass;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
@@ -55,10 +56,10 @@ class CustomerCreateJob implements ShouldQueue
         $this->shopDomain = ShopDomain::fromNative($this->shopDomain);
         $shop = User::where('name', $this->shopDomain->toNative())->first();
         $customer = json_decode(json_encode($this->data), false);
+        $log = new Logs();
+        $log->json_encode($customer);
+        $log->save();
         $customerController = new CustomerController();
         $customerController->customerCreateUpdate($customer, $shop);
-
-        // Do what you wish with the data
-        // Access domain name as $this->shopDomain->toNative()
     }
 }

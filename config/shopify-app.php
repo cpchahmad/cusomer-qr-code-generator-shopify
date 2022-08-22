@@ -358,7 +358,7 @@ return [
         ],
         [
             'topic' => 'CUSTOMERS_UPDATE',
-            'address' => 'http://phpstack-820245-2817839.cloudwaysapps.com/webhook/CUSTOMERS_UPDATE',
+            'address' => 'http://phpstack-820245-2817839.cloudwaysapps.com/webhook/customer-update',
         ]
     ],
 
