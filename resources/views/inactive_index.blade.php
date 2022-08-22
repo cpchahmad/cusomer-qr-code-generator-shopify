@@ -14,13 +14,13 @@
             <div class="card-header-actions">
                 <ul class="card-header-tabs">
                     <li class="card-header-tab">
-                        <a class="" href="{{ route('inactive') }}">All</a>
+                        <a class="" href="{{ route('home') }}">All</a>
                     </li>
                     <li class="card-header-tab">
                         <a href="{{ url('activeStatus') }}" class="">Active</a>
                     </li>
                     <li class="card-header-tab">
-                        <a href="{{ url('InactiveStatus') }}" class="">Inactive</a>
+                        <a href="{{ url('InactiveStatus') }}" class="">Inactive({{ $customer_data->total() }})</a>
                     </li>
 
                 </ul>

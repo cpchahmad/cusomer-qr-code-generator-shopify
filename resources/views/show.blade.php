@@ -33,11 +33,24 @@
                                     <h3>Status:</h3>
                                 </div>
                                 <div class="col-6">
-                                    @if ($customer->status == 0)
+                                    {{-- @if ($customer->status == 0)
                                         <p><span class="badge badge--success">Active</span></p>
                                     @else
                                         <p><span class="badge badge--attention">Inactive</span></p>
+                                    @endif --}}
+                                    @if (Session::has('status_change'))
+                                        <div class="alert alert-success" role="alert">
+                                            {{ Session::get('status_change') }}
+                                        </div>
                                     @endif
+                                    <span class="ml-2">
+                                        <label class="switch " for="test_mode-{{ $customer->id }}">
+                                            <input class="status-switch d-none" id="test_mode-{{ $customer->id }}"
+                                                @if (isset($customer->status) && $customer->status == 0) checked value="0" @else value="1" @endif
+                                                name="status" customerid={{ $customer->id }} type="checkbox">
+                                            <span class="slider round"></span>
+                                        </label>
+                                    </span>
                                 </div>
                             </div>
                             <div class="row" style="margin-top:2rem">
@@ -64,35 +77,71 @@
                 <div class="text-center">
                     <img src="{{ asset($customer->qr_code_svg) }}" style="width:270px">
                     <div style="margin-top: 3rem">
-                        <a class="btn btn-primary" href="{{ route('getfile', $customer->qr_code_svg) }}">Download
+                        <a class="btn btn-primary btn-sm" href="{{ route('getfile', $customer->qr_code_svg) }}">Download
                             QR Code</a>
                     </div>
-                    <div style="margin-top: 3rem">
-                        <?php
-                        $url = 'https://' . \Illuminate\Support\Facades\Auth::user()->name . '/a/customer/status/' . $customer->shopify_customer_id;
-                        ?>
-                        <input id="myInput" class="form-group" value="ali">
-                        <button onclick="myFunction()" class="btn btn-primary">Copy to Clipboard</button>
+
+                </div>
+                <div style="margin-top: 3rem" class="copy-text row">
+                    <?php
+                    $url = 'https://' . \Illuminate\Support\Facades\Auth::user()->name . '/a/customer/status/' . $customer->shopify_customer_id;
+                    ?>
+                    <div class="col-11"><input id="myInput" class="form-control text" value="{{ $url }}">
+                    </div>
+
+                    <div class="col-1">
+                        <button onclick="myFunction()" class="btn btn-primary btn-sm" style="margin-top: 2px">Copy</button>
                     </div>
                 </div>
+
             </div>
         </div>
     </main>
 @endsection
 @section('scripts')
     <script>
-        function myFunction() {
-            /* Get the text field */
-            var copyText = document.getElementById("myInput");
-            /* Select the text field */
-            copyText.select();
-            copyText.setSelectionRange(0, 99999); /* For mobile devices */
+        let copyText = document.querySelector(".copy-text");
+        copyText.querySelector("button").addEventListener("click", function() {
+            let input = copyText.querySelector("input.text");
+            input.select();
+            document.execCommand("copy");
+            copyText.classList.add('active');
+            window.getSelection().removeAllRanges();
+            setTImeout(function() {
+                copyText.classList.remove('active');
+            }, 2500);
+        })
+        // function myFunction() {
+        //     /* Get the text field */
+        //     var copyText = document.getElementById("myInput");
+        //     /* Select the text field */
+        //     copyText.select();
+        //     copyText.setSelectionRange(0, 99999); /* For mobile devices */
 
-            /* Copy the text inside the text field */
-            navigator.clipboard.writeText(copyText.value);
-            console.log(copyText.value)
-            /* Alert the copied text */
-            alert("Copied the text: " + copyText.value);
-        }
+        //     /* Copy the text inside the text field */
+        //     navigator.clipboard.writeText(copyText.value);
+        //     console.log(copyText.value)
+        //     /* Alert the copied text */
+        //     alert("Copied the text: " + copyText.value);
+        // }
+    </script>
+    <script>
+        $(document).on("change", ".status-switch", function() {
+            var status = $(this).is(':checked') == true ? 0 : 1;
+            var customer_id = $(this).attr('customerid');
+            console.log('ali')
+            $.ajax({
+                type: "GET",
+                dataType: "json",
+                url: '/changeStatus',
+                data: {
+                    'status': status,
+                    'customer_id': customer_id
+                },
+                success: function(data) {
+                    console.log(data.success)
+                }
+            });
+        })
     </script>
 @endsection

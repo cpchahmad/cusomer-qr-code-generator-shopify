@@ -14,7 +14,7 @@
             <div class="card-header-actions">
                 <ul class="card-header-tabs">
                     <li class="card-header-tab">
-                        <a class="" href="{{ route('home') }}">All</a>
+                        <a class="" href="{{ route('home') }}">All({{ $customer_data->total() }})</a>
                     </li>
                     <li class="card-header-tab">
                         <a href="{{ url('activeStatus') }}" class="">Active</a>
@@ -28,17 +28,18 @@
             <div class="card-body">
                 <form action="{{ route('home') }}">
                     <div class="row no-margins card-body-section">
-                        <div class="col-9">
+                        <div class="col-10">
                             <label for="select3" class="sr-only">Select 3</label>
                             <input type="search" class="form-control" name="search" placeholder="Search by name or email"
                                 value="{{ $search }}">
                         </div>
-                        <div class="col-3">
-                            <button type="submit" class="btn  btn-primary">Filter</button>
+                        <div class="col-2" style="margin-top: 2px;">
+                            <button type="submit" class="btn btn-sm btn-primary">Filter</button>
+                            @if (isset($search) && !empty($search))
+                                <a href="{{ route('home') }}" class="ml-3 btn btn-sm btn-danger">Reset</a>
+                            @endif
                         </div>
-                        {{-- @if (isset($search))
-                            <a href="{{ route('home') }}" class="ml-3 btn btn-danger">Reset</a>
-                        @endif --}}
+
 
                     </div>
                 </form>
@@ -128,6 +129,11 @@
 @section('scripts')
     <script>
         $(document).on("change", ".status-switch", function() {
+            toastr.options = {
+                "closeButton": true,
+                "newestOnTop": true,
+                "positionClass": "toast-top-right"
+            };
             var status = $(this).is(':checked') == true ? 0 : 1;
             var customer_id = $(this).attr('customerid');
             console.log('ali')
@@ -140,7 +146,7 @@
                     'customer_id': customer_id
                 },
                 success: function(data) {
-                    console.log(data.success)
+                    toastr.success(res.success);
                 }
             });
         })

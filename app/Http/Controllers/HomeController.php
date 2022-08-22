@@ -14,6 +14,7 @@ class HomeController extends Controller
     {
         $shop = Auth::user();
         $customer_data = Customer::where('user_id', Auth::user()->id);
+        $search = null;
         $search = $request['search'] ?? "";
         if ($search != "") {
             $customer_data = $customer_data->where('first_name', 'LIKE', '%' . "$search" . '%')->orwhere('email', 'LIKE', '%' . $search . '%');

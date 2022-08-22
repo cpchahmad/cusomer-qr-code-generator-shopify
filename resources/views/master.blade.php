@@ -11,6 +11,7 @@
     <title>Customers</title>
     <link rel="stylesheet" href="{{ asset('bootstrap-polaris.min.css') }}">
     <link rel="stylesheet" href="{{ asset('custom.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 
 </head>
 
@@ -19,7 +20,7 @@
 </body>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="{{ asset('bootstrap-polaris.js') }}"></script>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
 @yield('scripts')
 
 </html>

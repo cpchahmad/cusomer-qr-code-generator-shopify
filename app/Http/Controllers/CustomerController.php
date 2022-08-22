@@ -67,7 +67,6 @@ class CustomerController extends Controller
         $customer = Customer::find($request->customer_id);
         $customer->status = $request->status;
         $customer->save();
-        return response()->json(['success' => 'Status change successfully.']);
     }
     public function active()
     {
@@ -78,7 +77,7 @@ class CustomerController extends Controller
             $customer_data = $customer_data->where('first_name', 'LIKE', '%' . "$search" . '%')->orwhere('email', 'LIKE', '%' . $search . '%');
         }
         $customer_data = $customer_data->orderBy('created_at', 'desc')->paginate(50);
-        return view('index', compact('customer_data', 'search'));
+        return view('active_index', compact('customer_data', 'search'));
     }
     public function Inactive()
     {
@@ -89,7 +88,7 @@ class CustomerController extends Controller
             $customer_data = $customer_data->where('first_name', 'LIKE', '%' . "$search" . '%')->orwhere('email', 'LIKE', '%' . $search . '%');
         }
         $customer_data = $customer_data->orderBy('created_at', 'desc')->paginate(50);
-        return view('active_index', compact('customer_data', 'search'));
+        return view('inactive_index', compact('customer_data', 'search'));
     }
     public function getFile($filename)
     {
