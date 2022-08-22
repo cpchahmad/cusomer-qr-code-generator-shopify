@@ -350,7 +350,17 @@ return [
                 'address' => env('SHOPIFY_WEBHOOK_2_ADDRESS', 'https://some-app.com/webhook/purchase'),
             ]
             ...
-        */],
+            
+        */
+        [
+            'topic' => 'CUSTOMERS_CREATE',
+            'address' => 'http://phpstack-820245-2817839.cloudwaysapps.com/webhook/customer-create',
+        ],
+        [
+            'topic' => 'CUSTOMERS_UPDATE',
+            'address' => 'http://phpstack-820245-2817839.cloudwaysapps.com/webhook/CUSTOMERS_UPDATE',
+        ]
+    ],
 
     /*
     |--------------------------------------------------------------------------

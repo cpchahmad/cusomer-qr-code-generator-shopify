@@ -10,10 +10,15 @@ use Illuminate\Support\Facades\Redirect;
 
 class HomeController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $shop = Auth::user();
-        $customer_data = Customer::where('user_id', Auth::user()->id)->get();
-        return view('index', compact('customer_data'));
+        $customer_data = Customer::where('user_id', Auth::user()->id);
+        $search = $request['search'] ?? "";
+        if ($search != "") {
+            $customer_data = $customer_data->where('first_name', 'LIKE', '%' . "$search" . '%')->orwhere('email', 'LIKE', '%' . $search . '%');
+        }
+        $customer_data = $customer_data->orderBy('created_at', 'desc')->paginate(50);
+        return view('index', compact('customer_data', 'search'));
     }
 }

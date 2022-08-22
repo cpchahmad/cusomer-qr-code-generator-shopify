@@ -72,14 +72,24 @@ class CustomerController extends Controller
     public function active()
     {
         $shop = Auth::user();
-        $customer_data = Customer::where('user_id', Auth::user()->id)->where('status', '=', 0)->get();
-        return view('index', compact('customer_data'));
+        $customer_data = Customer::where('user_id', Auth::user()->id)->where('status', '=', 0);
+        $search = $request['search'] ?? "";
+        if ($search != "") {
+            $customer_data = $customer_data->where('first_name', 'LIKE', '%' . "$search" . '%')->orwhere('email', 'LIKE', '%' . $search . '%');
+        }
+        $customer_data = $customer_data->orderBy('created_at', 'desc')->paginate(50);
+        return view('index', compact('customer_data', 'search'));
     }
     public function Inactive()
     {
         $shop = Auth::user();
-        $customer_data = Customer::where('user_id', Auth::user()->id)->where('status', '=', 1)->get();
-        return view('index', compact('customer_data'));
+        $customer_data = Customer::where('user_id', Auth::user()->id)->where('status', '=', 1);
+        $search = $request['search'] ?? "";
+        if ($search != "") {
+            $customer_data = $customer_data->where('first_name', 'LIKE', '%' . "$search" . '%')->orwhere('email', 'LIKE', '%' . $search . '%');
+        }
+        $customer_data = $customer_data->orderBy('created_at', 'desc')->paginate(50);
+        return view('active_index', compact('customer_data', 'search'));
     }
     public function getFile($filename)
     {
