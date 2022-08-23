@@ -2,15 +2,16 @@
 
 namespace App\Jobs;
 
-use App\Http\Controllers\CustomerController;
-use App\Models\Logs;
 use stdClass;
+use Exception;
+use App\Models\Logs;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use App\Http\Controllers\CustomerController;
 use Osiset\ShopifyApp\Objects\Values\ShopDomain;
 
 class CustomerCreateJob implements ShouldQueue
@@ -52,14 +53,16 @@ class CustomerCreateJob implements ShouldQueue
      */
     public function handle()
     {
-        // Convert domain
-        $this->shopDomain = ShopDomain::fromNative($this->shopDomain);
-        $shop = User::where('name', $this->shopDomain->toNative())->first();
-        $customer = json_decode(json_encode($this->data), false);
-        $log = new Logs();
-        $log->logs = json_encode($customer);
-        $log->save();
-        $customerController = new CustomerController();
-        $customerController->customerCreateUpdate($customer, $shop);
+        try {
+            $this->shopDomain = ShopDomain::fromNative($this->shopDomain);
+            $shop = User::where('name', $this->shopDomain->toNative())->first();
+            $customer = json_decode(json_encode($this->data), false);
+            $customerController = new CustomerController();
+            $customerController->customerCreateUpdate($customer, $shop);
+        } catch (Exception $exception) {
+            $log = new Logs();
+            $log->logs = $exception->getMessage();
+            $log->save();
+        }
     }
 }

@@ -361,7 +361,7 @@ return [
             'address' => 'https://phpstack-820245-2817839.cloudwaysapps.com/webhook/customer-update',
         ],
         [
-            'topic' => 'CUSTOMER_DELETE',
+            'topic' => 'CUSTOMERS_DELETE',
             'address' => 'https://phpstack-820245-2817839.cloudwaysapps.com/webhook/customer-delete',
         ]
     ],
