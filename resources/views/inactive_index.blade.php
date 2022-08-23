@@ -34,7 +34,7 @@
                                 value="{{ $search }}">
                         </div>
                         <div class="col-3">
-                            <button type="submit" class="btn  btn-primary">Filter</button>
+                            <button type="submit" class="btn btn-sm btn-primary">Filter</button>
                             @if (isset($search) && !empty($search))
                                 <a href="{{ route('home') }}" class="ml-3 btn btn-sm btn-danger">Reset</a>
                             @endif
