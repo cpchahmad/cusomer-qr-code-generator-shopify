@@ -139,25 +139,27 @@ class CustomerController extends Controller
     }
     public function customerDelete($customer, $shop)
     {
-        $query = 'mutation customerDelete($input: CustomerDeleteInput!) {
-                customerDelete(input: $input) {
-                    deletedCustomerId
-                    shop {
-                    id
-                    }
-                    userErrors {
-                    field
-                    message
-                    }
-                }
-            }';
+        // $query = 'mutation customerDelete($input: CustomerDeleteInput!) {
+        //         customerDelete(input: $input) {
+        //             deletedCustomerId
+        //             shop {
+        //             id
+        //             }
+        //             userErrors {
+        //             field
+        //             message
+        //             }
+        //         }
+        //     }';
 
-        $orderBeginVariables = [
-            'input' => [
-                'id' => 'gid://shopify/Customer/' . $customer->id
-            ]
-        ];
-        $orderEditBegin = $shop->api()->graph($query, $orderBeginVariables);
+        // $orderBeginVariables = [
+        //     'input' => [
+        //         'id' => 'gid://shopify/Customer/' . $customer->id
+        //     ]
+        // ];
+        // $orderEditBegin = $shop->api()->graph($query, $orderBeginVariables);
+
+        $customer = Customer::where('shopify_customer_id', $customer->id)->delete();
     }
 
 
