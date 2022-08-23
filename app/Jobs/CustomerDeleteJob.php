@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use stdClass;
+use Exception;
 use App\Models\Logs;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
@@ -53,14 +54,19 @@ class CustomerDeleteJob implements ShouldQueue
     public function handle()
     {
         // Convert domain
-        $this->shopDomain = ShopDomain::fromNative($this->shopDomain);
-        $shop = User::where('name', $this->shopDomain->toNative())->first();
-        $customer = json_decode(json_encode($this->data), false);
-        $log = new Logs();
-        $log->logs = json_encode($customer);
-        $log->save();
-        $customerController = new CustomerController();
-        $customerController->customerDelete($customer, $shop);
+        try {
+            $this->shopDomain = ShopDomain::fromNative($this->shopDomain);
+            $shop = User::where('name', $this->shopDomain->toNative())->first();
+            $customer = json_decode(json_encode($this->data), false);
+
+            $customerController = new CustomerController();
+            $customerController->customerDelete($customer, $shop);
+        } catch (Exception $exception) {
+            $log = new Logs();
+            $log->logs = $exception->getMessage();
+            $log->save();
+        }
+
 
         // Do what you wish with the data
         // Access domain name as $this->shopDomain->toNative()
