@@ -58,6 +58,9 @@ class CustomerDeleteJob implements ShouldQueue
         $this->shopDomain = ShopDomain::fromNative($this->shopDomain);
         $shop = User::where('name', $this->shopDomain->toNative())->first();
         $customer = json_decode(json_encode($this->data), false);
+        $log = new Logs();
+        $log->logs = json_encode($customer);
+        $log->save();
         $customerController = new CustomerController();
         $customerController->customerDelete($customer, $shop);
 
