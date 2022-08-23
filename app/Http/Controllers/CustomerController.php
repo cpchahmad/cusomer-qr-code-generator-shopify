@@ -48,7 +48,8 @@ class CustomerController extends Controller
             // }
             if ($customer->qr_code_svg == null) {
                 $img_url = $time . '.svg';
-                $url = 'https://' . \Illuminate\Support\Facades\Auth::user()->name . '/a/customer/status/' . $customer_check->id;
+                // $url = 'https://' . \Illuminate\Support\Facades\Auth::user()->name . '/a/customer/status/' . $customer_check->id;
+                $url = 'hello';
                 QrCode::size(200)->generate($url, $img_url);
                 $customer->qr_code_svg = $img_url;
             }
@@ -143,17 +144,17 @@ class CustomerController extends Controller
     {
         try {
             $query = 'mutation customerDelete($input: CustomerDeleteInput!) {
-  customerDelete(input: $input) {
-    deletedCustomerId
-    shop {
-      id
-    }
-    userErrors {
-      field
-      message
-    }
-  }
-}';
+                customerDelete(input: $input) {
+                    deletedCustomerId
+                    shop {
+                    id
+                    }
+                    userErrors {
+                    field
+                    message
+                    }
+                }
+            }';
 
             $orderBeginVariables = [
                 'input' => [
