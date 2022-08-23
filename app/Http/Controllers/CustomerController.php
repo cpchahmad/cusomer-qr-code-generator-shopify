@@ -5,9 +5,10 @@ namespace App\Http\Controllers;
 use File;
 
 use Exception;
+use App\Models\Logs;
+use App\Models\User;
 use SimpleXMLElement;
 use App\Models\Customer;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
@@ -36,29 +37,35 @@ class CustomerController extends Controller
     }
     public function customerCreateUpdate($customer_check, $shop)
     {
-        $customer = Customer::where('user_id', $shop->id)->where('shopify_customer_id', $customer_check->id)->first();
-        if ($customer === null) {
-            $customer = new Customer();
+        try {
+            $customer = Customer::where('user_id', $shop->id)->where('shopify_customer_id', $customer_check->id)->first();
+            if ($customer === null) {
+                $customer = new Customer();
+            }
+            $time = rand();
+            // if (!File::exists(public_path('images'))) {
+            //     File::makeDirectory(public_path('images'), $mode = 0777, true, true);
+            // }
+            if ($customer->qr_code_svg == null) {
+                $img_url = $time . '.svg';
+                $url = 'https://' . \Illuminate\Support\Facades\Auth::user()->name . '/a/customer/status/' . $customer_check->id;
+                QrCode::size(200)->generate($url, $img_url);
+                $customer->qr_code_svg = $img_url;
+            }
+            $customer->shopify_customer_id = $customer_check->id;
+            $customer->user_id = $shop->id;
+            $customer->first_name = $customer_check->first_name;
+            $customer->last_name = $customer_check->last_name;
+            $customer->email = $customer_check->email;
+            $customer->created_at = $customer_check->created_at;
+            $customer->updated_at = $customer_check->updated_at;
+            $customer->status = $customer_check->state;
+            $customer->save();
+        } catch (Exception $exception) {
+            $log = new Logs();
+            $log->logs = $exception->getMessage();
+            $log->save();
         }
-        $time = rand();
-        // if (!File::exists(public_path('images'))) {
-        //     File::makeDirectory(public_path('images'), $mode = 0777, true, true);
-        // }
-        if ($customer->qr_code_svg == null) {
-            $img_url = $time . '.svg';
-            $url = 'https://' . \Illuminate\Support\Facades\Auth::user()->name . '/a/customer/status/' . $customer_check->id;
-            QrCode::size(200)->generate($url, $img_url);
-            $customer->qr_code_svg = $img_url;
-        }
-        $customer->shopify_customer_id = $customer_check->id;
-        $customer->user_id = $shop->id;
-        $customer->first_name = $customer_check->first_name;
-        $customer->last_name = $customer_check->last_name;
-        $customer->email = $customer_check->email;
-        $customer->created_at = $customer_check->created_at;
-        $customer->updated_at = $customer_check->updated_at;
-        $customer->status = $customer_check->state;
-        $customer->save();
     }
     public function show($id)
     {

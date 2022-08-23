@@ -53,16 +53,10 @@ class CustomerCreateJob implements ShouldQueue
      */
     public function handle()
     {
-        try {
-            $this->shopDomain = ShopDomain::fromNative($this->shopDomain);
-            $shop = User::where('name', $this->shopDomain->toNative())->first();
-            $customer = json_decode(json_encode($this->data), false);
-            $customerController = new CustomerController();
-            $customerController->customerCreateUpdate($customer, $shop);
-        } catch (Exception $exception) {
-            $log = new Logs();
-            $log->logs = $exception->getMessage();
-            $log->save();
-        }
+        $this->shopDomain = ShopDomain::fromNative($this->shopDomain);
+        $shop = User::where('name', $this->shopDomain->toNative())->first();
+        $customer = json_decode(json_encode($this->data), false);
+        $customerController = new CustomerController();
+        $customerController->customerCreateUpdate($customer, $shop);
     }
 }
