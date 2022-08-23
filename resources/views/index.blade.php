@@ -89,8 +89,9 @@
                                             <span class="ml-2">
                                                 <label class="switch " for="test_mode-{{ $key }}">
                                                     <input class="status-switch d-none" id="test_mode-{{ $key }}"
-                                                        @if (isset($customer->status) && $customer->status == 'disabled') checked value="disabled" @else value="enabled" @endif
-                                                        name="status" customerid={{ $customer->id }} type="checkbox">
+                                                        @if (isset($customer->status) && $customer->status == 'enabled') checked value="enabled" @else value="disabled" @endif
+                                                        name="status" customerid={{ $customer->id }}
+                                                        shopifyid={{ $customer->shopify_customer_id }} type="checkbox">
                                                     <span class="slider round"></span>
                                                 </label>
                                             </span>
@@ -131,17 +132,21 @@
     <script>
         $(document).on("change", ".status-switch", function() {
 
-            var status = $(this).is(':checked') == true ? 'disabled' : 'enabled';
+            var status = $(this).is(':checked') == true ? 'enabled' : 'disabled';
             var customer_id = $(this).attr('customerid');
+            var shopify_id = $(this).attr('shopifyid');
             $.ajax({
                 type: "GET",
                 dataType: "json",
                 url: '/changeStatus',
                 data: {
                     'status': status,
-                    'customer_id': customer_id
+                    'customer_id': customer_id,
+                    'shopify_id': shopify_id,
+                    'shop': "textglobal-testing-abdullah-store.myshopify.com",
                 },
                 success: function(response) {
+
                     alertify.success(response);
                 }
             });

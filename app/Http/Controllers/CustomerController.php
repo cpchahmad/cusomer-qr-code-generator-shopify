@@ -7,6 +7,7 @@ use File;
 use Exception;
 use SimpleXMLElement;
 use App\Models\Customer;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
@@ -21,7 +22,7 @@ class CustomerController extends Controller
             $response = $shop->api()->rest('GET', '/admin/customers.json');
             if ($response['errors'] == false) {
                 $customers = $response['body']['customers'];
-                dd($customers);
+
                 foreach ($customers as $customer_check) {
                     $this->customerCreateUpdate($customer_check, $shop);
                 }
@@ -66,10 +67,23 @@ class CustomerController extends Controller
     }
     public function status(Request $request)
     {
+
+        $shop = User::where('name', $request->shop)->first();
+
+        $customer_data = [
+            "customer" => [
+                'first_name' => 'hassan',
+                "state" => 'enabled',
+            ]
+        ];
+        $response = $shop->api()->rest('PUT', '/admin/customers/' . $request->shopify_id . 'json', $customer_data);
+        dd($response);
+
+
         $customer = Customer::find($request->customer_id);
         $customer->status = $request->status;
         $customer->save();
-        if ($customer->status == 'disabled') {
+        if ($customer->status == 'enabled') {
             return response()->json('Customer status active succefully!');
         } else {
             return response()->json('Customer status Inactive!');
@@ -118,7 +132,7 @@ class CustomerController extends Controller
         $html = view('status_view', compact('data'))->render();
         return response($html)->withHeaders(['Content-Type' => 'application/liquid']);
     }
-    public function customerDelete($shop)
+    public function customerDelete($customer, $shop)
     {
         $query = 'mutation customerDelete($input: CustomerDeleteInput!) {
   customerDelete(input: $input) {
@@ -135,7 +149,7 @@ class CustomerController extends Controller
 
         $orderBeginVariables = [
             'input' => [
-                'id' => 'gid://shopify/Customer/' . $customer->shopify_id
+                'id' => 'gid://shopify/Customer/' . $customer->id
             ]
         ];
         $orderEditBegin = $shop->api()->graph($query, $orderBeginVariables);

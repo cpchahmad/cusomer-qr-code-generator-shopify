@@ -91,7 +91,7 @@
                                             <span class="ml-2">
                                                 <label class="switch " for="test_mode-{{ $key }}">
                                                     <input class="status-switch d-none" id="test_mode-{{ $key }}"
-                                                        @if (isset($customer->status) && $customer->status == 0) checked value="0" @else value="1" @endif
+                                                        @if (isset($customer->status) && $customer->status == 'enabled') checked value="enabled" @else value="disabled" @endif
                                                         name="status" customerid={{ $customer->id }} type="checkbox">
                                                     <span class="slider round"></span>
                                                 </label>
@@ -131,7 +131,7 @@
 @section('scripts')
     <script>
         $(document).on("change", ".status-switch", function() {
-            var status = $(this).is(':checked') == true ? 0 : 1;
+            var status = $(this).is(':checked') == true ? 'enabled' : 'disabled';
             var customer_id = $(this).attr('customerid');
             console.log('ali')
             $.ajax({
