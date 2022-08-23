@@ -141,7 +141,8 @@ class CustomerController extends Controller
     }
     public function customerDelete($customer, $shop)
     {
-        $query = 'mutation customerDelete($input: CustomerDeleteInput!) {
+        try {
+            $query = 'mutation customerDelete($input: CustomerDeleteInput!) {
   customerDelete(input: $input) {
     deletedCustomerId
     shop {
@@ -154,11 +155,16 @@ class CustomerController extends Controller
   }
 }';
 
-        $orderBeginVariables = [
-            'input' => [
-                'id' => 'gid://shopify/Customer/' . $customer->id
-            ]
-        ];
-        $orderEditBegin = $shop->api()->graph($query, $orderBeginVariables);
+            $orderBeginVariables = [
+                'input' => [
+                    'id' => 'gid://shopify/Customer/' . $customer->id
+                ]
+            ];
+            $orderEditBegin = $shop->api()->graph($query, $orderBeginVariables);
+        } catch (Exception $exception) {
+            $log = new Logs();
+            $log->logs = $exception->getMessage();
+            $log->save();
+        }
     }
 }
