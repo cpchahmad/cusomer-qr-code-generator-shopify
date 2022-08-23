@@ -81,14 +81,10 @@ class CustomerController extends Controller
 
         $customer_data = [
             "customer" => [
-                'first_name' => 'hassan',
-                "state" => 'enabled',
+                'state' => 'disabled',
             ]
         ];
         $response = $shop->api()->rest('PUT', '/admin/customers/' . $request->shopify_id . 'json', $customer_data);
-        dd($response);
-
-
         $customer = Customer::find($request->customer_id);
         $customer->status = $request->status;
         $customer->save();
@@ -162,5 +158,33 @@ class CustomerController extends Controller
             ]
         ];
         $orderEditBegin = $shop->api()->graph($query, $orderBeginVariables);
+    }
+
+
+    public function customerDeletetest()
+    {
+
+        $shop = Auth::user();
+
+        $query = 'mutation customerDelete($input: CustomerDeleteInput!) {
+                customerDelete(input: $input) {
+                    deletedCustomerId
+                    shop {
+                    id
+                    }
+                    userErrors {
+                    field
+                    message
+                    }
+                }
+            }';
+
+        $orderBeginVariables = [
+            'input' => [
+                'id' => 'gid://shopify/Customer/6064805871798'
+            ]
+        ];
+        $orderEditBegin = $shop->api()->graph($query, $orderBeginVariables);
+        dd($orderEditBegin);
     }
 }
