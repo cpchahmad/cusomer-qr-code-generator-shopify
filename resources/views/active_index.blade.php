@@ -133,7 +133,6 @@
         $(document).on("change", ".status-switch", function() {
             var status = $(this).is(':checked') == true ? 0 : 1;
             var customer_id = $(this).attr('customerid');
-            console.log('ali')
             $.ajax({
                 type: "GET",
                 dataType: "json",
@@ -142,8 +141,8 @@
                     'status': status,
                     'customer_id': customer_id
                 },
-                success: function(data) {
-                    console.log(data.success)
+                success: function(response) {
+                    alertify.success(response);
                 }
             });
         })

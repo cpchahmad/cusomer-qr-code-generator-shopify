@@ -67,6 +67,13 @@ class CustomerController extends Controller
         $customer = Customer::find($request->customer_id);
         $customer->status = $request->status;
         $customer->save();
+        if ($customer->status == 0) {
+            return response()->json('Customer status active succefully!');
+        } else {
+            return response()->json('Customer status Inactive!');
+        }
+
+        // alertify()->success('i am daisychained')->delay(10000)->clickToClose()->position('bottom right');
     }
     public function active()
     {

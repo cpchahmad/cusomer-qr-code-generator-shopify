@@ -125,18 +125,14 @@
             </div>
         </div>
     </main>
+    {{-- @include('alertify::alertify') --}}
 @endsection
 @section('scripts')
     <script>
         $(document).on("change", ".status-switch", function() {
-            toastr.options = {
-                "closeButton": true,
-                "newestOnTop": true,
-                "positionClass": "toast-top-right"
-            };
+
             var status = $(this).is(':checked') == true ? 0 : 1;
             var customer_id = $(this).attr('customerid');
-            console.log('ali')
             $.ajax({
                 type: "GET",
                 dataType: "json",
@@ -145,8 +141,8 @@
                     'status': status,
                     'customer_id': customer_id
                 },
-                success: function(data) {
-                    toastr.success(res.success);
+                success: function(response) {
+                    alertify.success(response);
                 }
             });
         })

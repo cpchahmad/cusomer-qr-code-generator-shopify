@@ -142,8 +142,8 @@
                     'status': status,
                     'customer_id': customer_id
                 },
-                success: function(data) {
-                    console.log(data.success)
+                success: function(response) {
+                    alertify.success(response);
                 }
             });
         })

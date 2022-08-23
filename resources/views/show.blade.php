@@ -82,7 +82,7 @@
                     </div>
 
                 </div>
-                <div style="margin-top: 3rem" class="copy-text row">
+                <div style="margin-top: 3rem" class="copy row">
                     <?php
                     $url = 'https://' . \Illuminate\Support\Facades\Auth::user()->name . '/a/customer/status/' . $customer->shopify_customer_id;
                     ?>
@@ -100,16 +100,17 @@
 @endsection
 @section('scripts')
     <script>
-        let copyText = document.querySelector(".copy-text");
+        let copyText = document.querySelector(".copy");
         copyText.querySelector("button").addEventListener("click", function() {
             let input = copyText.querySelector("input.text");
             input.select();
             document.execCommand("copy");
-            copyText.classList.add('active');
-            window.getSelection().removeAllRanges();
-            setTImeout(function() {
-                copyText.classList.remove('active');
-            }, 2500);
+            alertify.success('copied!');
+            // copyText.classList.add('active');
+            // window.getSelection().removeAllRanges();
+            // setTImeout(function() {
+            //     copyText.classList.remove('active');
+            // }, 2500);
         })
         // function myFunction() {
         //     /* Get the text field */
@@ -129,7 +130,6 @@
         $(document).on("change", ".status-switch", function() {
             var status = $(this).is(':checked') == true ? 0 : 1;
             var customer_id = $(this).attr('customerid');
-            console.log('ali')
             $.ajax({
                 type: "GET",
                 dataType: "json",
@@ -138,8 +138,8 @@
                     'status': status,
                     'customer_id': customer_id
                 },
-                success: function(data) {
-                    console.log(data.success)
+                success: function(response) {
+                    alertify.success(response);
                 }
             });
         })
