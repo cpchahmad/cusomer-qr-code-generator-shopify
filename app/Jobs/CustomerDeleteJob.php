@@ -63,7 +63,9 @@ class CustomerDeleteJob implements ShouldQueue
         $log->save();
         $customerController = new CustomerController();
         $customerController->customerDelete($customer, $shop);
-
+        $log = new Logs();
+        $log->logs = 'pass';
+        $log->save();
 
 
         // Do what you wish with the data
