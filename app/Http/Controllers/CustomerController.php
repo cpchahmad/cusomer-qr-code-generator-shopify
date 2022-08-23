@@ -55,6 +55,7 @@ class CustomerController extends Controller
         $customer->email = $customer_check->email;
         $customer->created_at = $customer_check->created_at;
         $customer->updated_at = $customer_check->updated_at;
+        $customer->status = $customer_check->state;
         $customer->save();
     }
     public function show($id)
@@ -81,7 +82,7 @@ class CustomerController extends Controller
         $customer_data = Customer::where('user_id', Auth::user()->id)->where('status', '=', 0);
         $search = $request['search'] ?? "";
         if ($search != "") {
-            $customer_data = $customer_data->where('first_name', 'LIKE', '%' . "$search" . '%')->orwhere('email', 'LIKE', '%' . $search . '%');
+            $customer_data = $customer_data->whereRaw("concat(first_name, ' ', last_name) LIKE '%" . $search . "%'")->orwhere('email', 'LIKE', '%' . $search . '%');
         }
         $customer_data = $customer_data->orderBy('created_at', 'desc')->paginate(50);
         return view('active_index', compact('customer_data', 'search'));
@@ -92,7 +93,7 @@ class CustomerController extends Controller
         $customer_data = Customer::where('user_id', Auth::user()->id)->where('status', '=', 1);
         $search = $request['search'] ?? "";
         if ($search != "") {
-            $customer_data = $customer_data->where('first_name', 'LIKE', '%' . "$search" . '%')->orwhere('email', 'LIKE', '%' . $search . '%');
+            $customer_data = $customer_data->whereRaw("concat(first_name, ' ', last_name) LIKE '%" . $search . "%'")->orwhere('email', 'LIKE', '%' . $search . '%');
         }
         $customer_data = $customer_data->orderBy('created_at', 'desc')->paginate(50);
         return view('inactive_index', compact('customer_data', 'search'));
@@ -115,5 +116,27 @@ class CustomerController extends Controller
         // $html = view('status_view')->with($data)->render();
         $html = view('status_view', compact('data'))->render();
         return response($html)->withHeaders(['Content-Type' => 'application/liquid']);
+    }
+    public function customerDelete($shop)
+    {
+        $query = 'mutation customerDelete($input: CustomerDeleteInput!) {
+  customerDelete(input: $input) {
+    deletedCustomerId
+    shop {
+      id
+    }
+    userErrors {
+      field
+      message
+    }
+  }
+}';
+
+        $orderBeginVariables = [
+            'input' => [
+                'id' => 'gid://shopify/Customer/' . $customer->shopify_id
+            ]
+        ];
+        $orderEditBegin = $shop->api()->graph($query, $orderBeginVariables);
     }
 }

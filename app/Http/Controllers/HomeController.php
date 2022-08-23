@@ -17,7 +17,7 @@ class HomeController extends Controller
         $search = null;
         $search = $request['search'] ?? "";
         if ($search != "") {
-            $customer_data = $customer_data->where('first_name', 'LIKE', '%' . "$search" . '%')->orwhere('email', 'LIKE', '%' . $search . '%');
+            $customer_data = $customer_data->whereRaw("concat(first_name, ' ', last_name) LIKE '%" . $search . "%'")->orwhere('email', 'LIKE', '%' . $search . '%');
         }
         $customer_data = $customer_data->orderBy('created_at', 'desc')->paginate(50);
         return view('index', compact('customer_data', 'search'));
