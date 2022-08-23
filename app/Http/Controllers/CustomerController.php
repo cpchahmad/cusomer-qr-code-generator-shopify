@@ -49,7 +49,8 @@ class CustomerController extends Controller
             if ($customer->qr_code_svg == null) {
                 $img_url = $time . '.svg';
                 // $url = 'https://' . \Illuminate\Support\Facades\Auth::user()->name . '/a/customer/status/' . $customer_check->id;
-                $url = 'hello';
+                $url = 'https://cartfr.myshopify.com./a/customer/status/' . $customer_check->id;
+                // $url = 'hello';
                 QrCode::size(200)->generate($url, $img_url);
                 $customer->qr_code_svg = $img_url;
             }
@@ -142,8 +143,7 @@ class CustomerController extends Controller
     }
     public function customerDelete($customer, $shop)
     {
-        try {
-            $query = 'mutation customerDelete($input: CustomerDeleteInput!) {
+        $query = 'mutation customerDelete($input: CustomerDeleteInput!) {
                 customerDelete(input: $input) {
                     deletedCustomerId
                     shop {
@@ -156,16 +156,11 @@ class CustomerController extends Controller
                 }
             }';
 
-            $orderBeginVariables = [
-                'input' => [
-                    'id' => 'gid://shopify/Customer/' . $customer->id
-                ]
-            ];
-            $orderEditBegin = $shop->api()->graph($query, $orderBeginVariables);
-        } catch (Exception $exception) {
-            $log = new Logs();
-            $log->logs = $exception->getMessage();
-            $log->save();
-        }
+        $orderBeginVariables = [
+            'input' => [
+                'id' => 'gid://shopify/Customer/' . $customer->id
+            ]
+        ];
+        $orderEditBegin = $shop->api()->graph($query, $orderBeginVariables);
     }
 }
