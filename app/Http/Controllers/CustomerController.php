@@ -21,6 +21,7 @@ class CustomerController extends Controller
             $response = $shop->api()->rest('GET', '/admin/customers.json');
             if ($response['errors'] == false) {
                 $customers = $response['body']['customers'];
+                dd($customers);
                 foreach ($customers as $customer_check) {
                     $this->customerCreateUpdate($customer_check, $shop);
                 }
@@ -68,7 +69,7 @@ class CustomerController extends Controller
         $customer = Customer::find($request->customer_id);
         $customer->status = $request->status;
         $customer->save();
-        if ($customer->status == 0) {
+        if ($customer->status == 'disabled') {
             return response()->json('Customer status active succefully!');
         } else {
             return response()->json('Customer status Inactive!');

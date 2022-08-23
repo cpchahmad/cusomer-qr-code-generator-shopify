@@ -21,7 +21,7 @@ class CreateCustomersTable extends Migration
             $table->string('last_name')->nullable();
             $table->string('email')->nullable();
             $table->text('qr_code_svg')->nullable();
-            $table->boolean('status')->default(0);
+            $table->string('status')->nullable();
             $table->timestamps();
         });
     }
