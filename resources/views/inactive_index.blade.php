@@ -32,7 +32,7 @@
                             <input type="search" class="form-control" name="search" placeholder="Search by name or email"
                                 value="{{ $search }}">
                         </div>
-                        <div class="col-2">
+                        <div class="col-2" style="margin-top: 3px;">
                             <button type="submit" class="btn btn-sm btn-primary">Filter</button>
                             @if (isset($search) && !empty($search))
                                 <a href="{{ route('home') }}" class="ml-3 btn btn-sm btn-danger">Reset</a>
