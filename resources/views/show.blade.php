@@ -4,7 +4,8 @@
         <header class="page-header">
             <div class="page-header__content d-flex">
                 <a href="{{ route('home') }}" class="btn btn-primary btn-sm">Back</a>
-                <h1 class="display-2" style="margin-left: 2rem">{{ $customer->first_name . ' ' . $customer->last_name }}</h1>
+                <h1 class="display-2" style="text-transform: capitalize;margin-left: 2rem">
+                    {{ $customer->first_name . ' ' . $customer->last_name }}</h1>
             </div>
         </header>
         <div class="d-flex" style="margin-top: 3rem">
@@ -16,7 +17,7 @@
                                 <div class="col-4">
                                     <h3>Name: </h3>
                                 </div>
-                                <div class="col-6">
+                                <div class="col-6" style="text-transform: capitalize">
                                     <p>{{ $customer->first_name . ' ' . $customer->last_name }}</p>
                                 </div>
                             </div>

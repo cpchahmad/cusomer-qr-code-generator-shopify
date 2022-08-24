@@ -80,7 +80,7 @@
                                                 <span><span class="sr-only">Select Item</span></span>
                                             </label>
                                         </td>
-                                        <td><a
+                                        <td style="text-transform: capitalize"><a
                                                 href="{{ url('customer_detail/' . $customer->id) }}">{{ $customer->first_name . ' ' . $customer->last_name }}</a>
                                         </td>
 

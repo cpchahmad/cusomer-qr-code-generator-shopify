@@ -49,7 +49,7 @@ class CustomerController extends Controller
             if ($customer->qr_code_svg == null) {
                 $img_url = $time . '.svg';
                 // $url = 'https://' . \Illuminate\Support\Facades\Auth::user()->name . '/a/customer/status/' . $customer_check->id;
-                $url = 'https://cartfr.myshopify.com./a/customer/status/' . $customer_check->id;
+                $url = 'https://cartfr.myshopify.com/a/customer/status/' . $customer_check->id;
                 // $url = 'hello';
                 QrCode::size(200)->generate($url, $img_url);
                 $customer->qr_code_svg = $img_url;
@@ -135,7 +135,8 @@ class CustomerController extends Controller
         $data = Customer::where('shopify_customer_id', $id)->first();
         // $html = view('status_view')->with($data)->render();
         $html = view('status_view', compact('data'))->render();
-        return response($html)->withHeaders(['Content-Type' => 'application/liquid']);
+        // return response($html)->withHeaders(['Content-Type' => 'application/liquid']);
+        return response($html);
     }
     public function customerDelete($customer, $shop)
     {
