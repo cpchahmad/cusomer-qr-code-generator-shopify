@@ -163,30 +163,30 @@ class CustomerController extends Controller
     }
 
 
-    public function customerDeletetest()
-    {
+    // public function customerDeletetest()
+    // {
 
-        $shop = Auth::user();
+    //     $shop = Auth::user();
 
-        $query = 'mutation customerDelete($input: CustomerDeleteInput!) {
-                customerDelete(input: $input) {
-                    deletedCustomerId
-                    shop {
-                    id
-                    }
-                    userErrors {
-                    field
-                    message
-                    }
-                }
-            }';
+    //     $query = 'mutation customerDelete($input: CustomerDeleteInput!) {
+    //             customerDelete(input: $input) {
+    //                 deletedCustomerId
+    //                 shop {
+    //                 id
+    //                 }
+    //                 userErrors {
+    //                 field
+    //                 message
+    //                 }
+    //             }
+    //         }';
 
-        $orderBeginVariables = [
-            'input' => [
-                'id' => 'gid://shopify/Customer/6064805871798'
-            ]
-        ];
-        $orderEditBegin = $shop->api()->graph($query, $orderBeginVariables);
-        dd($orderEditBegin);
-    }
+    //     $orderBeginVariables = [
+    //         'input' => [
+    //             'id' => 'gid://shopify/Customer/6064805871798'
+    //         ]
+    //     ];
+    //     $orderEditBegin = $shop->api()->graph($query, $orderBeginVariables);
+    //     dd($orderEditBegin);
+    // }
 }
