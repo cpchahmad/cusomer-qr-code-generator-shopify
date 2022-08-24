@@ -11,10 +11,10 @@
         <h3>Status:</h3>
     </div>
     <div style="margin-left: 10rem">
-        @if ($data->status == 'disabled')
-            <p><span class="badge badge--success">InActive</span></p>
-        @else
-            <p><span class="badge badge--attention" style="">active</span></p>
+        @if ($data->status == 'enabled')
+            <p><span class="badge badge--success">Active</span></p>
+        @elseif ($data->status == 'disabled')
+            <p><span class="badge badge--attention" style="">Inactive</span></p>
         @endif
     </div>
 </div>

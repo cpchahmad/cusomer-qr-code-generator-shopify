@@ -81,11 +81,11 @@ class CustomerController extends Controller
 
         $customer_data = [
             "customer" => [
-                'state' => 'disabled',
+                'state' => $request->status,
             ]
         ];
         $response = $shop->api()->rest('PUT', '/admin/customers/' . $request->shopify_id . 'json', $customer_data);
-        $customer = Customer::find($request->customer_id);
+        $customer = Customer::find($request->customer_id)->first();
         $customer->status = $request->status;
         $customer->save();
         if ($customer->status == 'enabled') {
@@ -99,7 +99,7 @@ class CustomerController extends Controller
     public function active()
     {
         $shop = Auth::user();
-        $customer_data = Customer::where('user_id', Auth::user()->id)->where('status', '=', 0);
+        $customer_data = Customer::where('user_id', Auth::user()->id)->where('status', '=', 'enabled');
         $search = $request['search'] ?? "";
         if ($search != "") {
             $customer_data = $customer_data->whereRaw("concat(first_name, ' ', last_name) LIKE '%" . $search . "%'")->orwhere('email', 'LIKE', '%' . $search . '%');
@@ -110,7 +110,7 @@ class CustomerController extends Controller
     public function Inactive()
     {
         $shop = Auth::user();
-        $customer_data = Customer::where('user_id', Auth::user()->id)->where('status', '=', 1);
+        $customer_data = Customer::where('user_id', Auth::user()->id)->where('status', '=', 'disabled');
         $search = $request['search'] ?? "";
         if ($search != "") {
             $customer_data = $customer_data->whereRaw("concat(first_name, ' ', last_name) LIKE '%" . $search . "%'")->orwhere('email', 'LIKE', '%' . $search . '%');

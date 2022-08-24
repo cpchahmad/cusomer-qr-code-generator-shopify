@@ -47,7 +47,8 @@
                                         <label class="switch " for="test_mode-{{ $customer->id }}">
                                             <input class="status-switch d-none" id="test_mode-{{ $customer->id }}"
                                                 @if (isset($customer->status) && $customer->status == 'enabled') checked value="enabled" @else value="disabled" @endif
-                                                name="status" customerid={{ $customer->id }} type="checkbox">
+                                                name="status" customerid={{ $customer->id }}
+                                                shopifyid={{ $customer->shopify_customer_id }} type="checkbox">
                                             <span class="slider round"></span>
                                         </label>
                                     </span>
@@ -112,31 +113,21 @@
             //     copyText.classList.remove('active');
             // }, 2500);
         })
-        // function myFunction() {
-        //     /* Get the text field */
-        //     var copyText = document.getElementById("myInput");
-        //     /* Select the text field */
-        //     copyText.select();
-        //     copyText.setSelectionRange(0, 99999); /* For mobile devices */
-
-        //     /* Copy the text inside the text field */
-        //     navigator.clipboard.writeText(copyText.value);
-        //     console.log(copyText.value)
-        //     /* Alert the copied text */
-        //     alert("Copied the text: " + copyText.value);
-        // }
     </script>
     <script>
         $(document).on("change", ".status-switch", function() {
             var status = $(this).is(':checked') == true ? 'enabled' : 'disabled';
             var customer_id = $(this).attr('customerid');
+            var shopify_id = $(this).attr('shopifyid');
             $.ajax({
                 type: "GET",
                 dataType: "json",
                 url: '/changeStatus',
                 data: {
                     'status': status,
-                    'customer_id': customer_id
+                    'customer_id': customer_id,
+                    'shopify_id': shopify_id,
+                    'shop': "textglobal-testing-abdullah-store.myshopify.com",
                 },
                 success: function(response) {
                     alertify.success(response);
