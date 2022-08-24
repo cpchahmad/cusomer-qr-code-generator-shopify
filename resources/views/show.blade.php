@@ -39,11 +39,7 @@
                                     @else
                                         <p><span class="badge badge--attention">Inactive</span></p>
                                     @endif --}}
-                                    @if (Session::has('status_change'))
-                                        <div class="alert alert-success" role="alert">
-                                            {{ Session::get('status_change') }}
-                                        </div>
-                                    @endif
+
                                     <span class="ml-2">
                                         <label class="switch " for="test_mode-{{ $customer->id }}">
                                             <input class="status-switch d-none" id="test_mode-{{ $customer->id }}"

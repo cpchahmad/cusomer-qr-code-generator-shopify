@@ -9,7 +9,6 @@
                 <a href="{{ url('syncCustomer') }}" class="btn btn-primary">Customer Sync</a>
             </div>
         </header>
-
         <div class="card">
             <div class="card-header-actions">
                 <ul class="card-header-tabs">
@@ -28,12 +27,12 @@
             <div class="card-body">
                 <form action="{{ route('home') }}">
                     <div class="row no-margins card-body-section">
-                        <div class="col-9">
+                        <div class="col-10">
                             <label for="select3" class="sr-only">Select 3</label>
                             <input type="search" class="form-control" name="search" placeholder="Search by name or email"
                                 value="{{ $search }}">
                         </div>
-                        <div class="col-3">
+                        <div class="col-2">
                             <button type="submit" class="btn btn-sm btn-primary">Filter</button>
                             @if (isset($search) && !empty($search))
                                 <a href="{{ route('home') }}" class="ml-3 btn btn-sm btn-danger">Reset</a>
