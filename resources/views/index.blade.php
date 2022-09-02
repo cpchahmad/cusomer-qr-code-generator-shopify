@@ -1,12 +1,30 @@
 @extends('master')
+@section('style')
+    <style>
+        .custom-link {
+            border-bottom: 2px solid rgb(14, 4, 36) !important;
+            border-radius: 0px !important;
+        }
+
+        .alertify-notifier {
+            color: white
+        }
+
+        a:hover {
+            border: none
+        }
+    </style>
+@endsection
 @section('content')
     <main class="container-fluid">
         <header class="page-header" style="display: flex;padding:1rem">
-            <div class="page-header__content">
-                <h1 class="display-2">Customers</h1>
-            </div>
-            <div style="margin-left:75rem">
-                <a href="{{ url('syncCustomer') }}" class="btn btn-primary">Customer Sync</a>
+            <div class="row w-100">
+                <div class="page-header__content col-md-6">
+                    <h1 class="display-2">Customers</h1>
+                </div>
+                <div class="col-md-6">
+                    <a href="{{ url('syncCustomer') }}" class="btn btn-primary" style="float: right">Customer Sync</a>
+                </div>
             </div>
         </header>
 
@@ -14,13 +32,16 @@
             <div class="card-header-actions">
                 <ul class="card-header-tabs">
                     <li class="card-header-tab">
-                        <a class="" href="{{ route('home') }}">All({{ $customer_data->total() }})</a>
+                        <a class="{{ request()->is('/') ? 'custom-link' : '' }}"
+                            href="{{ route('home') }}">All({{ $customer_data->total() }})</a>
                     </li>
                     <li class="card-header-tab">
-                        <a href="{{ url('activeStatus') }}" class="">Active</a>
+                        <a href="{{ url('activeStatus') }}"
+                            class="{{ request()->is('activeStatus') ? 'custom-link' : '' }}">Active({{ $customer_active->total() }})</a>
                     </li>
                     <li class="card-header-tab">
-                        <a href="{{ url('InactiveStatus') }}" class="">Inactive</a>
+                        <a href="{{ url('InactiveStatus') }}"
+                            class="{{ request()->is('InactiveStatus') ? 'custom-link' : '' }}">Inactive({{ $customer_Inactive->total() }})</a>
                     </li>
 
                 </ul>

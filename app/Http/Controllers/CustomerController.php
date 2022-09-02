@@ -3,16 +3,18 @@
 namespace App\Http\Controllers;
 
 use File;
-
+use Imagick;
 use Exception;
 use App\Models\Logs;
 use App\Models\User;
 use SimpleXMLElement;
 use App\Models\Customer;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use Image;
 
 class CustomerController extends Controller
 {
@@ -25,6 +27,11 @@ class CustomerController extends Controller
                 $customers = $response['body']['customers'];
 
                 foreach ($customers as $customer_check) {
+                    // if ($key == 0) {
+                    //     dd($customer_check);
+                    // } else {
+                    //     dd('ali');
+                    // }
                     $this->customerCreateUpdate($customer_check, $shop);
                 }
                 return Redirect::tokenRedirect('home', ['notice' => 'customer Sync successfully!']);
@@ -37,37 +44,37 @@ class CustomerController extends Controller
     }
     public function customerCreateUpdate($customer_check, $shop)
     {
-        try {
-            $customer = Customer::where('user_id', $shop->id)->where('shopify_customer_id', $customer_check->id)->first();
-            if ($customer === null) {
-                $customer = new Customer();
-            }
-            $time = rand();
-            // if (!File::exists(public_path('images'))) {
-            //     File::makeDirectory(public_path('images'), $mode = 0777, true, true);
-            // }
-            if ($customer->qr_code_svg == null) {
-                $img_url = $time . '.svg';
-                // $url = 'https://' . \Illuminate\Support\Facades\Auth::user()->name . '/a/customer/status/' . $customer_check->id;
-                $url = 'https://cartfr.myshopify.com/a/customer/status/' . $customer_check->id;
-                // $url = 'hello';
-                QrCode::size(200)->generate($url, $img_url);
-                $customer->qr_code_svg = $img_url;
-            }
-            $customer->shopify_customer_id = $customer_check->id;
-            $customer->user_id = $shop->id;
-            $customer->first_name = $customer_check->first_name;
-            $customer->last_name = $customer_check->last_name;
-            $customer->email = $customer_check->email;
-            $customer->created_at = $customer_check->created_at;
-            $customer->updated_at = $customer_check->updated_at;
-            $customer->status = $customer_check->state;
-            $customer->save();
-        } catch (Exception $exception) {
-            $log = new Logs();
-            $log->logs = $exception->getMessage();
-            $log->save();
+        // try {
+
+        $customer = Customer::where('user_id', $shop->id)->where('shopify_customer_id', $customer_check->id)->first();
+
+        if ($customer === null) {
+            $customer = new Customer();
         }
+
+
+        $time = rand();
+        if ($customer->qr_code_svg == null) {
+            $img_url = $time . '.svg';
+            // $url = 'https://' . \Illuminate\Support\Facades\Auth::user()->name . '/a/customer/status/' . $customer_check->id;
+            $url = 'https://cartfr.myshopify.com/a/customer/status/' . $customer_check->id;
+            QrCode::size(200)->generate($url, $img_url);
+            $customer->qr_code_svg = $img_url;
+        }
+        $customer->shopify_customer_id = $customer_check->id;
+        $customer->user_id = $shop->id;
+        $customer->first_name = $customer_check->first_name;
+        $customer->last_name = $customer_check->last_name;
+        $customer->email = $customer_check->email;
+        $customer->created_at = $customer_check->created_at;
+        $customer->updated_at = $customer_check->updated_at;
+        $customer->status = $customer_check->state;
+        $customer->save();
+        // } catch (Exception $exception) {
+        //     $log = new Logs();
+        //     $log->logs = $exception->getMessage();
+        //     $log->save();
+        // }
     }
     public function show($id)
     {
@@ -77,15 +84,15 @@ class CustomerController extends Controller
     public function status(Request $request)
     {
 
-        $shop = User::where('name', $request->shop)->first();
+        // $shop = User::where('name', $request->shop)->first();
 
-        $customer_data = [
-            "customer" => [
-                'state' => $request->status,
-            ]
-        ];
-        $response = $shop->api()->rest('PUT', '/admin/customers/' . $request->shopify_id . 'json', $customer_data);
-        $customer = Customer::find($request->customer_id)->first();
+        // $customer_data = [
+        //     "customer" => [
+        //         'state' => $request->status,
+        //     ]
+        // ];
+        // $response = $shop->api()->rest('PUT', '/admin/customers/' . $request->shopify_id . 'json', $customer_data);
+        $customer = Customer::find($request->customer_id);
         $customer->status = $request->status;
         $customer->save();
         if ($customer->status == 'enabled') {
@@ -99,37 +106,39 @@ class CustomerController extends Controller
     public function active()
     {
         $shop = Auth::user();
-        $customer_data = Customer::where('user_id', Auth::user()->id)->where('status', '=', 'enabled');
+        $customer_data = Customer::where('user_id', Auth::user()->id);
+        $customer_data = $customer_data->orderBy('created_at', 'desc')->paginate(50);
+        $customer_Inactive = Customer::where('user_id', Auth::user()->id)->where('status', '=', 'disabled');
+        $customer_Inactive = $customer_Inactive->paginate(50);
+        $customer_active = Customer::where('user_id', Auth::user()->id)->where('status', '=', 'enabled');
         $search = $request['search'] ?? "";
         if ($search != "") {
-            $customer_data = $customer_data->whereRaw("concat(first_name, ' ', last_name) LIKE '%" . $search . "%'")->orwhere('email', 'LIKE', '%' . $search . '%');
+            $customer_active = $customer_active->whereRaw("concat(first_name, ' ', last_name) LIKE '%" . $search . "%'")->orwhere('email', 'LIKE', '%' . $search . '%');
         }
-        $customer_data = $customer_data->orderBy('created_at', 'desc')->paginate(50);
-        return view('active_index', compact('customer_data', 'search'));
+        $customer_active = $customer_active->orderBy('created_at', 'desc')->paginate(50);
+        return view('active_index', compact('customer_data', 'search', 'customer_active', 'customer_Inactive'));
     }
     public function Inactive()
     {
         $shop = Auth::user();
-        $customer_data = Customer::where('user_id', Auth::user()->id)->where('status', '=', 'disabled');
+        $customer_data = Customer::where('user_id', Auth::user()->id);
+        $customer_data = $customer_data->orderBy('created_at', 'desc')->paginate(50);
+        $customer_active = Customer::where('user_id', Auth::user()->id)->where('status', '=', 'enabled');
+        $customer_active = $customer_active->paginate(50);
+        $customer_Inactive = Customer::where('user_id', Auth::user()->id)->where('status', '=', 'disabled');
         $search = $request['search'] ?? "";
         if ($search != "") {
-            $customer_data = $customer_data->whereRaw("concat(first_name, ' ', last_name) LIKE '%" . $search . "%'")->orwhere('email', 'LIKE', '%' . $search . '%');
+            $customer_Inactive = $customer_Inactive->whereRaw("concat(first_name, ' ', last_name) LIKE '%" . $search . "%'")->orwhere('email', 'LIKE', '%' . $search . '%');
         }
-        $customer_data = $customer_data->orderBy('created_at', 'desc')->paginate(50);
-        return view('inactive_index', compact('customer_data', 'search'));
+        $customer_Inactive = $customer_Inactive->orderBy('created_at', 'desc')->paginate(50);
+        return view('inactive_index', compact('customer_data', 'search', 'customer_Inactive', 'customer_active'));
     }
     public function getFile($filename)
     {
-
         $path = public_path($filename);
         return response()->download($path);
-        // $svgTemplate = new SimpleXMLElement($filename);
-        // $svgTemplate->registerXPathNamespace('svg', 'code');
-        // $svgTemplate->rect->addAttribute('fill-opacity', 0);
-        // $filename = $svgTemplate->asXML();
-        // Storage::disk('public')->put($filename);
-        // return response()->download($filename);
     }
+
     public function checkStatus($id)
     {
         $data = Customer::where('shopify_customer_id', $id)->first();
@@ -140,26 +149,6 @@ class CustomerController extends Controller
     }
     public function customerDelete($customer, $shop)
     {
-        // $query = 'mutation customerDelete($input: CustomerDeleteInput!) {
-        //         customerDelete(input: $input) {
-        //             deletedCustomerId
-        //             shop {
-        //             id
-        //             }
-        //             userErrors {
-        //             field
-        //             message
-        //             }
-        //         }
-        //     }';
-
-        // $orderBeginVariables = [
-        //     'input' => [
-        //         'id' => 'gid://shopify/Customer/' . $customer->id
-        //     ]
-        // ];
-        // $orderEditBegin = $shop->api()->graph($query, $orderBeginVariables);
-
         $customer = Customer::where('shopify_customer_id', $customer->id)->delete();
     }
 

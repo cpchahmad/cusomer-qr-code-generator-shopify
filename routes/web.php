@@ -16,7 +16,8 @@ use Illuminate\Support\Facades\Route;
 */
 
 // Route::get('/', function () {
-//     return view('welcome');
+//     if (!extension_loaded('imagick'))
+//         echo 'imagick not installed';
 // });
 
 Route::group(['middleware' => ['verify.shopify']], function () {

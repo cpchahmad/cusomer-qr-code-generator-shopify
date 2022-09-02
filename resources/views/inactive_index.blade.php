@@ -1,25 +1,46 @@
 @extends('master')
+@section('style')
+    <style>
+        .custom-link {
+            border-bottom: 2px solid rgb(14, 4, 36) !important;
+            border-radius: 0px !important;
+        }
+
+        .alertify-notifier {
+            color: white
+        }
+
+        a:hover {
+            border: none
+        }
+    </style>
+@endsection
 @section('content')
     <main class="container-fluid">
         <header class="page-header" style="display: flex;padding:1rem">
-            <div class="page-header__content">
-                <h1 class="display-2">Customers</h1>
-            </div>
-            <div style="margin-left:75rem">
-                <a href="{{ url('syncCustomer') }}" class="btn btn-primary">Customer Sync</a>
+            <div class="row w-100">
+                <div class="page-header__content col-md-6">
+                    <h1 class="display-2">Customers</h1>
+                </div>
+                <div style="" class="col-md-6">
+                    <a href="{{ url('syncCustomer') }}" class="btn btn-primary" style="float: right">Customer Sync</a>
+                </div>
             </div>
         </header>
         <div class="card">
             <div class="card-header-actions">
                 <ul class="card-header-tabs">
                     <li class="card-header-tab">
-                        <a class="" href="{{ route('home') }}">All</a>
+                        <a class="{{ request()->is('/') ? 'custom-link' : '' }}"
+                            href="{{ route('home') }}">All({{ $customer_data->total() }})</a>
                     </li>
                     <li class="card-header-tab">
-                        <a href="{{ url('activeStatus') }}" class="">Active</a>
+                        <a href="{{ url('activeStatus') }}"
+                            class="{{ request()->is('activeStatus') ? 'custom-link' : '' }}">Active({{ $customer_active->total() }})</a>
                     </li>
                     <li class="card-header-tab">
-                        <a href="{{ url('InactiveStatus') }}" class="">Inactive({{ $customer_data->total() }})</a>
+                        <a href="{{ url('InactiveStatus') }}"
+                            class="{{ request()->is('InactiveStatus') ? 'custom-link' : '' }}">Inactive({{ $customer_Inactive->total() }})</a>
                     </li>
 
                 </ul>
@@ -72,8 +93,8 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @if ($customer_data->count())
-                                @foreach ($customer_data as $key => $customer)
+                            @if ($customer_Inactive->count())
+                                @foreach ($customer_Inactive as $key => $customer)
                                     <tr>
                                         <td>
                                             <label for="check1-{{ $key }}" class="polaris-check">
@@ -113,13 +134,13 @@
                     </table>
                 </div>
                 <div style="padding-left:35rem; margin-top:30px; ">
-                    @if ($customer_data->count())
+                    @if ($customer_Inactive->count())
                         <div style="max-width:100%">
-                            {!! $customer_data->links() !!}
+                            {!! $customer_Inactive->links() !!}
                         </div>
                         <b>
-                            Records {{ $customer_data->firstItem() }} - {{ $customer_data->lastItem() }} of
-                            {{ $customer_data->total() }} (for page {{ $customer_data->currentPage() }} )
+                            Records {{ $customer_Inactive->firstItem() }} - {{ $customer_Inactive->lastItem() }} of
+                            {{ $customer_Inactive->total() }} (for page {{ $customer_Inactive->currentPage() }} )
                         </b>
                         {{-- <p>showing records {{ $customers_data->count() }} from {{ $customers_data->total() }}</p> --}}
                     @endif

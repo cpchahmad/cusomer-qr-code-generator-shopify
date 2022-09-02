@@ -1,4 +1,11 @@
 @extends('master')
+@section('style')
+    <style>
+        .alertify-notifier {
+            color: white
+        }
+    </style>
+@endsection
 @section('content')
     <main class="container-fluid">
         <header class="page-header">
@@ -8,8 +15,9 @@
                     {{ $customer->first_name . ' ' . $customer->last_name }}</h1>
             </div>
         </header>
-        <div class="d-flex" style="margin-top: 3rem">
-            <div class="card col-6" style="margin-bottom:159px">
+
+        <div class="d-flex row" style="margin-top: 3rem">
+            <div class="card col-md-6" style="margin-bottom:159px">
                 <div class="card-body">
                     <ul class="">
                         <li style="list-style-type: none">
@@ -71,16 +79,16 @@
                     </ul>
                 </div>
             </div>
-            <div class="" style="padding-left: 15rem">
+            <div class="col-md-6" style="">
                 <div class="text-center">
-                    <img src="{{ asset($customer->qr_code_svg) }}" style="width:270px">
+                    <img src="{{ asset($customer->qr_code_svg) }}" style="width:60%">
                     <div style="margin-top: 3rem">
                         <a class="btn btn-primary btn-sm" href="{{ route('getfile', $customer->qr_code_svg) }}">Download
                             QR Code</a>
                     </div>
 
                 </div>
-                <div style="margin-top: 3rem" class="copy row">
+                <div style="margin-top: 1rem;margin-right:1rem" class="copy row">
                     <?php
                     $url = 'https://' . \Illuminate\Support\Facades\Auth::user()->name . '/a/customer/status/' . $customer->shopify_customer_id;
                     ?>
